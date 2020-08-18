@@ -1,14 +1,12 @@
 <script lang="ts">
-  import type { WordList } from "./types";
-  import wordlist from "./wordlist";
+  import words from "./wordlist";
   import DisplayBox from "./DisplayBox.svelte";
   import InputBox from "./InputBox.svelte";
   import Timer from "./Timer.svelte";
+  import { getRow } from "./utilities";
 
-  let wordList: WordList = wordlist.map((word) => ({
-    word,
-    status: "pending",
-  }));
+  let currentRow = getRow(words);
+  let nextRow = getRow(words);
   let wordIndex = 0;
   let isRunning = false;
   let testTime = 60000;
@@ -20,15 +18,20 @@
   let incorrectCharacters = 0;
 
   const onCompleteWord = (correct: boolean) => {
-    const word = wordList[wordIndex];
+    const word = currentRow[wordIndex];
     if (correct) {
-      correctCharacters += word.word.length + 1;
+      correctCharacters += word.text.length + 1;
       word.status = "correct";
     } else {
-      incorrectCharacters += word.word.length + 1;
+      incorrectCharacters += word.text.length + 1;
       word.status = "incorrect";
     }
     wordIndex += 1;
+    if (wordIndex === currentRow.length) {
+      currentRow = nextRow;
+      nextRow = getRow(words);
+      wordIndex = 0;
+    }
   };
 
   let timerStep = () => {
@@ -121,13 +124,13 @@
     <h1>Keeb Pro</h1>
   </mainWrapper>
   <mainWrapper>
-    <DisplayBox {wordList} {wordIndex} />
+    <DisplayBox wordRows={[currentRow, nextRow]} {wordIndex} />
   </mainWrapper>
   <mainWrapper>
     <inputPane>
       <inputWrapper>
         <InputBox
-          currentWord={wordList[wordIndex].word}
+          currentWord={currentRow[wordIndex].text}
           onKeyUp={startTimer}
           {onCompleteWord} />
       </inputWrapper>

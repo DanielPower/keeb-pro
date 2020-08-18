@@ -1,6 +1,7 @@
 export type WordStatus = "correct" | "incorrect" | "pending";
 
-export type WordList = Array<{
-  word: string;
+export type Word = {
+  index: number;
+  text: string;
   status: WordStatus;
-}>;
+};

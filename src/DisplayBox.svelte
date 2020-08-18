@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { WordList } from "./types";
-  export let wordList: WordList;
+  import type { Word } from "./types";
+  export let wordRows: Word[][];
   export let wordIndex: number;
-  console.log(wordList);
 </script>
 
 <style>
@@ -15,9 +14,6 @@
     font-size: 1.5rem;
     line-height: 2.5rem;
     text-align: left;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 
   word {
@@ -25,7 +21,7 @@
   }
 
   .current {
-    color: f8f8f2;
+    color: #f8f8f2;
     background: #44665a;
     border-radius: 0.25rem;
   }
@@ -44,17 +40,21 @@
 </style>
 
 <main>
-  {#each wordList as word, i}
-    <word>
-      {#if i === wordIndex}
-        <span class="current">{word.word}</span>
-      {:else if word.status === 'correct'}
-        <span class="correct">{word.word}</span>
-      {:else if word.status === 'incorrect'}
-        <span class="incorrect">{word.word}</span>
-      {:else}
-        <span class="pending">{word.word}</span>
-      {/if}
-    </word>
+  {#each wordRows as wordRow, rowIndex}
+    <div>
+      {#each wordRow as word}
+        <word>
+          {#if word.index === wordIndex && rowIndex === 0}
+            <span class="current">{word.text}</span>
+          {:else if word.status === 'correct'}
+            <span class="correct">{word.text}</span>
+          {:else if word.status === 'incorrect'}
+            <span class="incorrect">{word.text}</span>
+          {:else}
+            <span class="pending">{word.text}</span>
+          {/if}
+        </word>
+      {/each}
+    </div>
   {/each}
 </main>
