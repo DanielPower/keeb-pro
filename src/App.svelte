@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import words from "./wordlist";
   import DisplayBox from "./DisplayBox.svelte";
   import InputBox from "./InputBox.svelte";
   import Timer from "./Timer.svelte";
@@ -31,7 +30,7 @@
     wordIndex += 1;
     if (wordIndex === currentRow.length) {
       currentRow = nextRow;
-      nextRow = getRow(words, displayBox);
+      nextRow = getRow(displayBox);
       wordIndex = 0;
     }
   };
@@ -58,8 +57,8 @@
   };
 
   onMount(() => {
-    currentRow = getRow(words, displayBox);
-    nextRow = getRow(words, displayBox);
+    currentRow = getRow(displayBox);
+    nextRow = getRow(displayBox);
   });
 </script>
 

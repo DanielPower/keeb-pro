@@ -1,4 +1,5 @@
 import type { Word } from "./types";
+import words from "./wordlist";
 
 export const toSeconds = (milliseconds: number) =>
   Math.floor(milliseconds / 1000);
@@ -7,7 +8,7 @@ export const toMinutes = (milliseconds: number) =>
   Math.floor(milliseconds / 60000);
 
 // TODO Someday maybe I'll find a better way to do all this
-export const getRow = (words: string[], element: HTMLElement): Word[] => {
+export const getRow = (element: HTMLElement): Word[] => {
   const row = [];
   const targetWidth = element.getBoundingClientRect().width;
   const container = document.createElement("div");
