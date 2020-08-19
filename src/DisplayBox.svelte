@@ -2,6 +2,7 @@
   import type { Word } from "./types";
   export let wordRows: Word[][];
   export let wordIndex: number;
+  export let element: HTMLElement;
 </script>
 
 <style>
@@ -39,7 +40,7 @@
   }
 </style>
 
-<main>
+<main bind:this={element}>
   {#each wordRows as wordRow, rowIndex}
     <div>
       {#each wordRow as word}

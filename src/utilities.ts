@@ -6,25 +6,28 @@ export const toSeconds = (milliseconds: number) =>
 export const toMinutes = (milliseconds: number) =>
   Math.floor(milliseconds / 60000);
 
-export const getRow = (words: string[]): Word[] => {
+// TODO Someday maybe I'll find a better way to do all this
+export const getRow = (words: string[], element: HTMLElement): Word[] => {
+  const row = [];
+  const targetWidth = element.getBoundingClientRect().width;
   const container = document.createElement("div");
   container.style.fontSize = "1.5rem";
+  container.style.padding = "1rem";
   document.body.appendChild(container);
-  let count = 0;
-  while (container.getBoundingClientRect().width < 600) {
-    container.innerHTML += `${words.pop()} `;
-    count += 1;
+  while (container.getBoundingClientRect().width <= targetWidth) {
+    const word = words.pop();
+    row.push(word);
+    const wordElement = document.createElement("span");
+    wordElement.style.marginRight = "0.5rem";
+    wordElement.innerText = word;
+    container.appendChild(wordElement);
   }
+  row.pop();
   document.body.removeChild(container);
 
-  const row: Word[] = [];
-  for (let index = 0; index < count; index += 1) {
-    row.push({
-      index,
-      text: words.pop(),
-      status: "pending",
-    });
-  }
-
-  return row;
+  return row.map((word, index) => ({
+    index,
+    text: word,
+    status: "pending",
+  }));
 };
