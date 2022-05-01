@@ -62,6 +62,37 @@
   });
 </script>
 
+<main>
+  <!-- TODO do something better than these wrappers -->
+  <mainWrapper>
+    <h1>Keeb Pro</h1>
+  </mainWrapper>
+  <mainWrapper>
+    <DisplayBox
+      bind:element={displayBox}
+      wordRows={[currentRow, nextRow]}
+      {wordIndex}
+    />
+  </mainWrapper>
+  <mainWrapper>
+    <inputPane>
+      <inputWrapper>
+        <InputBox
+          currentWord={(isRunning && currentRow[wordIndex].text) || null}
+          onKeyUp={startTimer}
+          {onCompleteWord}
+        />
+      </inputWrapper>
+      <inputWrapper>
+        <wpm>{wpm || ''}</wpm>
+      </inputWrapper>
+      <inputWrapper>
+        <Timer {timeRemaining} />
+      </inputWrapper>
+    </inputPane>
+  </mainWrapper>
+</main>
+
 <style>
   :global(html) {
     background: #282a36;
@@ -82,7 +113,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50rem;
+    max-width: 50rem;
   }
 
   h1 {
@@ -123,32 +154,3 @@
     width: 100%;
   }
 </style>
-
-<main>
-  <!-- TODO do something better than these wrappers -->
-  <mainWrapper>
-    <h1>Keeb Pro</h1>
-  </mainWrapper>
-  <mainWrapper>
-    <DisplayBox
-      bind:element={displayBox}
-      wordRows={[currentRow, nextRow]}
-      {wordIndex} />
-  </mainWrapper>
-  <mainWrapper>
-    <inputPane>
-      <inputWrapper>
-        <InputBox
-          currentWord={(isRunning && currentRow[wordIndex].text) || null}
-          onKeyUp={startTimer}
-          {onCompleteWord} />
-      </inputWrapper>
-      <inputWrapper>
-        <wpm>{wpm || ''}</wpm>
-      </inputWrapper>
-      <inputWrapper>
-        <Timer {timeRemaining} />
-      </inputWrapper>
-    </inputPane>
-  </mainWrapper>
-</main>
