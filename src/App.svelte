@@ -5,10 +5,11 @@
   import Timer from "./Timer.svelte";
   import { getRow } from "./utilities";
 
+  const TEST_TIMES = [15000, 30000, 60000, 120000, 300000];
+
   let currentRow = [];
   let nextRow = [];
   let wordIndex = 0;
-  let isRunning = false;
   let testTime = 60000;
   let timeElapsed = 0;
   let timeRemaining = testTime;
@@ -17,6 +18,8 @@
   let correctCharacters = 0;
   let incorrectCharacters = 0;
   let displayBox: HTMLElement;
+  let state: "ready" | "running" | "stopped" = "ready";
+  let userInput = "";
 
   const onCompleteWord = (correct: boolean) => {
     const word = currentRow[wordIndex];
@@ -36,23 +39,46 @@
   };
 
   let timerStep = () => {
-    timeElapsed = Date.now() - startTime;
-    timeRemaining = testTime - timeElapsed;
-    wpm = Math.floor((correctCharacters / 5 / timeElapsed) * 60000);
-    if (timeElapsed > testTime) {
-      isRunning = false;
-      timeElapsed = 0;
-      timeRemaining = testTime;
-    } else {
-      setTimeout(timerStep, 200);
+    if (state === "running") {
+      timeElapsed = Date.now() - startTime;
+      timeRemaining = testTime - timeElapsed;
+      wpm = Math.floor((correctCharacters / 5 / timeElapsed) * 60000);
+      if (timeElapsed > testTime) {
+        state = "stopped";
+        timeElapsed = 0;
+        timeRemaining = testTime;
+      } else {
+        setTimeout(timerStep, 200);
+      }
     }
   };
 
   const startTimer = () => {
-    if (!isRunning) {
-      isRunning = true;
+    if (state === "ready") {
+      state = "running";
       startTime = Date.now();
       timerStep();
+    }
+  };
+
+  const restartTimer = () => {
+    state = "ready";
+    timeElapsed = 0;
+    startTime = null;
+    timeRemaining = testTime;
+    currentRow = getRow(displayBox);
+    nextRow = getRow(displayBox);
+    userInput = "";
+    wordIndex = 0;
+  };
+
+  const changeTimer = () => {
+    console.log(state);
+    if (state === "ready") {
+      testTime =
+        TEST_TIMES[(TEST_TIMES.indexOf(testTime) + 1) % TEST_TIMES.length];
+      console.log(testTime);
+      timeRemaining = testTime;
     }
   };
 
@@ -78,17 +104,20 @@
     <inputPane>
       <inputWrapper>
         <InputBox
-          currentWord={(isRunning && currentRow[wordIndex].text) || null}
+          disabled={state === 'stopped'}
+          currentWord={(state === 'running' && currentRow[wordIndex].text) || null}
           onKeyUp={startTimer}
+          bind:value={userInput}
           {onCompleteWord}
         />
       </inputWrapper>
       <inputWrapper>
         <wpm>{wpm || ''}</wpm>
       </inputWrapper>
-      <inputWrapper>
+      <inputWrapper on:click={changeTimer}>
         <Timer {timeRemaining} />
       </inputWrapper>
+      <inputWrapper on:click={restartTimer}>Restart</inputWrapper>
     </inputPane>
   </mainWrapper>
 </main>

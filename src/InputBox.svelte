@@ -3,20 +3,23 @@
   export let currentWord: string;
   export let onCompleteWord: (correct: boolean) => void;
   export let onKeyUp: () => void;
-  let userInput: string = "";
+  export let disabled: boolean;
+  export let value: string = "";
 
   const handleKeyUp = async (event: KeyboardEvent) => {
     onKeyUp();
     if (event.key === " ") {
       await tick();
-      const [submission, ...rest] = userInput.split(" ");
-      if (userInput !== " ") {
+      const [submission, ...rest] = value.split(" ");
+      if (value !== " ") {
         onCompleteWord(submission === currentWord);
       }
-      userInput = rest.join("");
+      value = rest.join("");
     }
   };
 </script>
+
+<input {disabled} bind:value on:keyup={handleKeyUp} />
 
 <style>
   input {
@@ -27,5 +30,3 @@
     color: inherit;
   }
 </style>
-
-<input bind:value={userInput} on:keyup={handleKeyUp} />
